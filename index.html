@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pedro &amp; Sarah · 30 de janeiro de 2027</title>
+<meta name="description" content="Você está convidado para o casamento de Pedro e Sarah. Abra o convite.">
+<meta name="theme-color" content="#5e4029">
+
+<!-- Open Graph (troque SEU-USUARIO e o nome do repositório) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pedro &amp; Sarah — 30 de janeiro de 2027">
+<meta property="og:description" content="Você recebeu um convite. Toque no lacre para abrir.">
+<meta property="og:image" content="https://SEU-USUARIO.github.io/convite/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://SEU-USUARIO.github.io/convite/">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+
+<style>
+/* Citadel Script não está no Google Fonts: coloque o arquivo (com licença) em assets/fonts/.
+   Enquanto ele não existir, a Pinyon Script entra como substituta. */
+@font-face{font-family:'Citadel Script';src:url(assets/fonts/citadel-script.woff2) format('woff2'),url(assets/fonts/citadel-script.otf) format('opentype');font-display:swap}
+
+/* ============ BASE ============ */
+:root{
+  --ink:#3f3832; --gold:#b08d57; --gold-d:#8a6d3b;
+  --script:'Citadel Script','Pinyon Script',cursive;
+  --cw:min(100vw,50dvh);                         /* largura do convite: proporção 9:18 (1 largura : 2 alturas) */
+  --tri:0.2% 0,99.8% 0,50% 63.5%;                /* contorno triangular da lapela */
+}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{
+  font-family:'Cormorant SC',Georgia,serif; color:var(--ink);
+  background:url(assets/wood.jpg) center/cover no-repeat,
+    repeating-linear-gradient(90deg,#6b4a2f 0 14px,#5e4029 14px 29px,#73522f 29px 47px);
+  -webkit-tap-highlight-color:transparent;
+}
+.stage{position:fixed;inset:0;display:grid;place-items:center}
+.loader{position:fixed;inset:0;display:grid;place-items:center;color:#f3e7d3;letter-spacing:.3em;font-size:1rem;transition:opacity .6s}
+.ready .loader{opacity:0;pointer-events:none}
+
+/* ============ CONVITE (9:18) ============ */
+.invite{
+  position:relative;width:var(--cw);height:calc(var(--cw)*2);container-type:size;   /* tudo usa cqw: escala com o convite */
+  opacity:0;transition:opacity .9s ease;box-shadow:0 2cqw 7cqw rgba(0,0,0,.5);
+}
+.ready .invite{opacity:1}
+.pages{position:absolute;inset:0;overflow:hidden;background:#f3efe6}
+
+/* ---------- folhas internas ---------- */
+.sheet{position:absolute;inset:0;display:none;z-index:var(--z);background:#f3efe6}
+.sheet.on{display:block}
+/* a arte da folha é 9:16; metade de cima + metade de baixo evitam distorcer o papel e o dourado */
+.sheet::before,.sheet::after{content:"";position:absolute;left:0;width:100%;height:50.2%;background:url(assets/folha-principal.jpg) no-repeat;background-size:100% auto}
+.sheet::before{top:0;background-position:top}
+.sheet::after{bottom:0;background-position:bottom}
+.in{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;padding:23cqw 11cqw 21cqw}
+.in.mid{justify-content:center;gap:7cqw}
+.hint{position:absolute;left:0;right:0;bottom:7cqw;font-size:2.8cqw;letter-spacing:.16em;color:var(--gold-d);opacity:.85}
+
+/* página 1 */
+.quote{font-size:4cqw;letter-spacing:.05em;line-height:1.6;max-width:72cqw}
+.quote small{display:block;margin-top:2.4cqw;font-size:3.1cqw;letter-spacing:.12em;color:var(--gold-d)}
+.names{font-family:var(--script);font-weight:400;font-size:11.5cqw;line-height:1.1;text-wrap:balance}
+.amp{display:block;font:400 6.4cqw 'Cormorant SC',serif;color:var(--gold);margin:1.2cqw 0}
+.lead{font-size:4cqw;letter-spacing:.05em;line-height:1.65}
+.cap{font-size:3.6cqw;letter-spacing:.1em;color:var(--gold-d);margin-bottom:3.4cqw}
+.parents{display:grid;grid-template-columns:1fr 1fr;gap:5cqw;width:78cqw;font-size:3.4cqw;letter-spacing:.04em;line-height:1.5}
+.parents span{display:block;margin-bottom:1.6cqw}
+
+/* página 2 */
+.st{font-family:var(--script);font-weight:400;font-size:10cqw;line-height:1}
+.when{font-size:4.3cqw;letter-spacing:.05em;line-height:1.65}
+.when b{font-weight:600}
+.addr{display:inline-flex;gap:1.6cqw;align-items:flex-start;max-width:72cqw;margin-top:2.6cqw;font-size:3.3cqw;letter-spacing:.04em;line-height:1.45;color:var(--ink);text-decoration:none;border-bottom:1px solid rgba(176,141,87,.55);padding-bottom:1cqw}
+.addr svg{flex:none;width:4.2cqw;height:4.2cqw;margin-top:.2cqw;fill:none;stroke:var(--gold-d);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.addr:hover,.addr:focus-visible{opacity:.7}
+.orn{width:34cqw;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);position:relative}
+.orn::after{content:"";position:absolute;left:50%;top:50%;width:1.8cqw;height:1.8cqw;background:var(--gold);transform:translate(-50%,-50%) rotate(45deg)}
+.confirm{max-width:66cqw;padding:4.4cqw 5cqw;border:1px solid rgba(176,141,87,.7);outline:1px solid rgba(176,141,87,.3);outline-offset:1cqw;font-size:4cqw;font-weight:600;letter-spacing:.05em;line-height:1.55}
+
+/* página 3 */
+.ttl{font-size:4.6cqw;font-weight:600;letter-spacing:.1em}
+.icons{display:flex;justify-content:center;gap:4cqw}
+.ic{width:27cqw;min-height:44px;display:flex;flex-direction:column;align-items:center;gap:2.6cqw;color:var(--ink);text-decoration:none;transition:transform .25s ease,opacity .25s ease}
+.ic:hover,.ic:active,.ic:focus-visible{transform:translateY(-1cqw);opacity:.7}
+.ic svg{width:12.5cqw;height:12.5cqw;fill:none;stroke:var(--gold-d);stroke-width:1;stroke-linecap:round;stroke-linejoin:round}
+.ic span{font-size:3.2cqw;letter-spacing:.06em;line-height:1.3}
+.polaroid{width:56cqw;background:#fff;padding:3.2cqw 3.2cqw 11.5cqw;transform:rotate(-2.4deg);box-shadow:0 .9cqw 2.6cqw rgba(0,0,0,.28),0 .2cqw .7cqw rgba(0,0,0,.18)}
+.polaroid .ph{aspect-ratio:4/5;background:linear-gradient(135deg,#e6dfd2,#d9d0bf);overflow:hidden}
+.polaroid img{display:block;width:100%;height:100%;object-fit:cover}
+
+/* ---------- capa fechada ---------- */
+.cover{position:absolute;inset:0;z-index:5;background:url(assets/paper-page.jpg) center/cover,#f3efe6}
+.clique{position:absolute;left:0;right:0;top:63.5%;z-index:25;border:0;background:none;font:inherit;font-size:3.1cqw;letter-spacing:.38em;color:var(--gold-d);cursor:pointer;text-align:center;animation:blink 2.8s ease-in-out infinite}
+@keyframes blink{50%{opacity:.4}}
+
+/* lapela: peça articulada pelo lado de cima (dobradiça no topo) */
+.flap{position:absolute;left:0;top:0;width:100%;aspect-ratio:9/16;z-index:30;pointer-events:none;
+  transform-origin:50% 0;transform-style:preserve-3d;transform:perspective(2200px) rotateX(0deg)}
+.flap .f,.flap .b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flap .f{background:url(assets/lapela.webp) center/100% 100% no-repeat}
+.flap .f::after{content:"";position:absolute;inset:0;clip-path:polygon(var(--tri));background:linear-gradient(180deg,rgba(255,255,255,0),rgba(70,45,10,.5));opacity:0}
+.flap .b{transform:rotateX(180deg)}                 /* verso da lapela: papel liso + costas do lacre */
+.flap .fl{position:absolute;inset:0;transform:scaleY(-1)}
+.flap .fl i{position:absolute;inset:0;background:url(assets/paper-page.jpg) center/cover;clip-path:polygon(var(--tri));filter:brightness(.94)}
+.flap .fl u{position:absolute;left:50%;top:60.9%;width:21.9%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 40% 35%,#d4a63a,#9c7418)}
+.seal{position:absolute;left:50%;top:60.9%;width:23%;aspect-ratio:1;transform:translate(-50%,-50%);border:0;border-radius:50%;background:none;cursor:pointer;pointer-events:auto;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;animation:ring 2.8s ease-in-out infinite}
+.seal:focus-visible{outline:2px solid var(--gold-d);outline-offset:4px}
+@keyframes ring{50%{box-shadow:0 0 0 2cqw rgba(176,141,87,.2)}}
+/* sombra projetada pela lapela sobre o papel */
+.fsh{position:absolute;left:0;top:0;width:100%;aspect-ratio:9/16;z-index:29;pointer-events:none;transform-origin:50% 0;filter:blur(1.3cqw);opacity:.25;transform:translateY(1.2cqw)}
+.fsh i{position:absolute;inset:0;background:#000;clip-path:polygon(var(--tri))}
+.fsh u{position:absolute;left:50%;top:60.9%;width:21.9%;aspect-ratio:1;border-radius:50%;background:#000;transform:translate(-50%,-50%)}
+
+.opening .clique{opacity:0;animation:none;transition:opacity .4s}
+.opening .seal{animation:none;pointer-events:none}
+.opening .flap{animation:lift 2.6s cubic-bezier(.5,.02,.25,1) forwards}
+.opening .flap .f::after{animation:flex 2.6s ease-in forwards}
+.opening .fsh{animation:fsh 2.6s cubic-bezier(.5,.02,.25,1) forwards}
+.opening .cover{animation:unc 1.3s ease-in-out .9s forwards}
+@keyframes lift{to{transform:perspective(2200px) rotateX(180deg)}}
+@keyframes flex{35%{opacity:.8}50%{opacity:1}100%{opacity:1}}
+@keyframes fsh{20%{opacity:.4;transform:translateY(3cqw) scaleY(.95)}55%{opacity:.35;transform:translateY(2cqw) scaleY(.4)}80%{opacity:.1;transform:scaleY(.05)}100%{opacity:0;transform:scaleY(0)}}
+@keyframes unc{to{opacity:0}}
+.opened .flap,.opened .fsh,.opened .cover,.opened .clique{display:none}
+
+/* ---------- dobra do canto (camadas calculadas em JS) ---------- */
+.ov{position:absolute;inset:0;pointer-events:none;display:none}
+.fold-on .ov{display:block}
+#underClip{z-index:9}
+#foldShadow{z-index:10;filter:drop-shadow(-.6cqw .8cqw 1.2cqw rgba(0,0,0,.32))}
+#backTex{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;background:url(assets/paper-page.jpg) center/cover}
+#flapShade,#underG{position:absolute;left:0;top:0;transform-origin:0 0}
+#flapShade{background:linear-gradient(90deg,rgba(30,20,5,.38) 0,rgba(255,255,255,.38) 18%,rgba(0,0,0,.05) 60%,rgba(0,0,0,.2) 100%)}
+#underG{background:linear-gradient(90deg,rgba(0,0,0,.34),rgba(0,0,0,0))}
+
+.zone{position:absolute;bottom:0;width:30%;height:16%;z-index:20;touch-action:none;cursor:grab;outline:none}
+.zone:focus-visible{box-shadow:inset 0 0 0 2px rgba(138,109,59,.5)}
+#zoneR{right:0}#zoneL{left:0}
+
+@media (prefers-reduced-motion:reduce){.clique,.seal{animation:none}}
+</style>
+</head>
+<body>
+<p class="loader">Carregando convite…</p>
+
+<main class="stage">
+  <div class="invite" id="invite">
+
+    <!-- folhas internas: uma por vez -->
+    <div class="pages" id="pages">
+
+      <!-- Folha 1 · convite principal -->
+      <section class="sheet on" style="--z:3"><div class="in">
+        <blockquote class="quote">Foi o tempo que dedicaste à tua rosa<br>que a fez tão importante.<small>— Antoine de Saint-Exupéry</small></blockquote>
+        <h1 class="names">Pedro Afonso Oliveira Rocha<span class="amp">&amp;</span>Sarah Pereira Martins</h1>
+        <p class="lead">Convidam para celebração do seu casamento.<br>Sua presença tornará esse dia ainda mais especial.</p>
+        <div>
+          <p class="cap">Com a bênção de seus pais:</p>
+          <div class="parents">
+            <div><span>Sandro Campos Martins</span><span>Solange Alves Pereira Martins</span></div>
+            <div><span>Amarildo Alves da Rocha</span><span>Ângela Maria de Oliveira Rocha</span></div>
+          </div>
+        </div>
+        <p class="hint">Puxe o canto para virar a página</p>
+      </div></section>
+
+      <!-- Folha 2 · cerimônia e recepção -->
+      <section class="sheet" style="--z:2"><div class="in mid">
+        <h2 class="st">Cerimônia religiosa</h2>
+        <p class="when"><b>Sábado, dia 30 de janeiro de 2027,</b><br>Às 15:30h, na Igreja Matriz
+          <br><a class="addr" href="https://maps.app.goo.gl/eSbXkjs3kRv5yhiB6" target="_blank" rel="noopener" aria-label="Abrir a Igreja Matriz no Google Maps">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            <span>(Praça Dr. Raul Carneiro, nº 5 - Centro, Tupaciguara - MG)</span></a></p>
+        <div class="orn"></div>
+        <h2 class="st">Recepção</h2>
+        <p class="when">Após a cerimônia, teremos o prazer de recebê-lo para o jantar no<br><b>Centro de Eventos Luiz Pereira Rezende</b>
+          <br><a class="addr" href="https://maps.app.goo.gl/yEX2Qz7K93ePUqpeA" target="_blank" rel="noopener" aria-label="Abrir o Centro de Eventos no Google Maps">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            <span>(Parque de Exposições Capitu, Via Expressa Renato Azeredo)</span></a></p>
+        <p class="confirm">Confirme sua presença para receber o convite individual da recepção.</p>
+        <p class="hint">Puxe o canto para virar a página</p>
+      </div></section>
+
+      <!-- Folha 3 · interações e foto -->
+      <section class="sheet" style="--z:1"><div class="in mid">
+        <p class="ttl">Toque nos ícones para interagir</p>
+        <nav class="icons">
+          <a class="ic" href="https://noivos.casar.com/pedro-e-sarah-30-01-2027#/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+            <span>Site dos Noivos</span></a>
+          <a class="ic" href="https://noivos.casar.com/pedro-e-sarah-30-01-2027#/rsvp" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg>
+            <span>Confirme sua presença</span></a>
+          <a class="ic" href="https://noivos.casar.com/pedro-e-sarah-30-01-2027#/presentes" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M12 8v13M3 12h18M12 8C10 4 6 4 7 7c.5 1.5 3 1 5 1zm0 0c2-4 6-4 5-1-.5 1.5-3 1-5 1z"/></svg>
+            <span>Para nos presentear</span></a>
+        </nav>
+        <!-- Polaroid: usa assets/couple.jpeg; se o arquivo não existir, fica só o espaço vazio -->
+        <figure class="polaroid"><div class="ph"><img src="assets/couple.jpeg" alt="Pedro e Sarah" onerror="this.remove()"></div></figure>
+      </div></section>
+
+      <!-- dobra do canto: sombra revelada + verso do papel -->
+      <div class="ov" id="underClip"><div id="underG"></div></div>
+      <div class="ov" id="foldShadow"><div class="ov" id="flapClip"><div id="backTex"></div><div id="flapShade"></div></div></div>
+
+      <!-- papel liso que cobre a folha 1 enquanto o convite está fechado -->
+      <div class="cover"></div>
+    </div>
+
+    <!-- zonas de toque nos cantos inferiores -->
+    <div class="zone" id="zoneR" role="button" tabindex="0" aria-label="Próxima página" hidden></div>
+    <div class="zone" id="zoneL" role="button" tabindex="0" aria-label="Página anterior" hidden></div>
+
+    <!-- capa fechada -->
+    <button class="clique" id="clique">CLIQUE AQUI</button>
+    <div class="fsh"><i></i><u></u></div>
+    <div class="flap">
+      <div class="f"></div>
+      <div class="b"><div class="fl"><i></i><u></u></div></div>
+      <button class="seal" id="seal" aria-label="Romper o lacre e abrir o convite"></button>
+    </div>
+  </div>
+</main>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const invite = $('#invite'), pages = $('#pages'), sheets = $$('.sheet'), last = sheets.length - 1;
+const flapClip = $('#flapClip'), backTex = $('#backTex'), flapShade = $('#flapShade'), underClip = $('#underClip'), underG = $('#underG');
+const zR = $('#zoneR'), zL = $('#zoneL');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let W = 0, H = 0, cur = 0, busy = false, opened = false, idleOn = false, raf = 0, drag = null;
+
+const measure = () => { const r = pages.getBoundingClientRect(); W = r.width; H = r.height; };
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const ease = k => k < .5 ? 4*k*k*k : 1 - Math.pow(-2*k + 2, 3) / 2;
+const easeOut = k => 1 - Math.pow(1 - k, 3);
+const css = p => p.length < 3 ? 'polygon(0 0,0 0,0 0)' : 'polygon(' + p.map(q => q[0].toFixed(1) + 'px ' + q[1].toFixed(1) + 'px').join(',') + ')';
+
+/* recorta um polígono por um semiplano (lado s da reta que passa por M com normal n) */
+function clip(poly, n, M, s) {
+  const o = [];
+  for (let i = 0; i < poly.length; i++) {
+    const a = poly[i], b = poly[(i + 1) % poly.length];
+    const da = s * ((a[0]-M[0])*n[0] + (a[1]-M[1])*n[1]), db = s * ((b[0]-M[0])*n[0] + (b[1]-M[1])*n[1]);
+    if (da <= 0) o.push(a);
+    if ((da < 0 && db > 0) || (da > 0 && db < 0)) { const t = da / (da - db); o.push([a[0] + (b[0]-a[0])*t, a[1] + (b[1]-a[1])*t]); }
+  }
+  return o;
+}
+
+/* P = posição para onde o canto inferior direito da folha foi levado.
+   A dobra é a mediatriz entre o canto original e P; o verso do papel é o reflexo da parte dobrada. */
+function render(P, idx) {
+  const dx = W - P[0], dy = H - P[1], len = Math.hypot(dx, dy), sh = sheets[idx];
+  if (len < 1.5) { sh.style.clipPath = ''; pages.classList.remove('fold-on'); return; }
+  const n = [dx/len, dy/len], M = [(W + P[0])/2, (H + P[1])/2], k = n[0]*M[0] + n[1]*M[1];
+  const R = [[0,0],[W,0],[W,H],[0,H]], front = clip(R, n, M, 1), peel = clip(R, n, M, -1);
+  sh.style.clipPath = css(front);
+  let depth = 0;
+  const fp = peel.map(p => { const d = p[0]*n[0] + p[1]*n[1] - k; depth = Math.max(depth, d); return [p[0] - 2*d*n[0], p[1] - 2*d*n[1]]; });
+  pages.classList.add('fold-on');
+  flapClip.style.clipPath = css(fp);
+  backTex.style.transform = `matrix(${1-2*n[0]*n[0]},${-2*n[0]*n[1]},${-2*n[0]*n[1]},${1-2*n[1]*n[1]},${2*k*n[0]},${2*k*n[1]})`;
+  const Hh = 3 * Math.max(W, H);
+  flapShade.style.cssText = `width:${depth}px;height:${Hh}px;transform:translate(${M[0]}px,${M[1]}px) rotate(${Math.atan2(-n[1], -n[0])}rad) translate(0,${-Hh/2}px)`;
+  underClip.style.clipPath = css(peel);
+  underG.style.cssText = `width:${Math.min(110, len*.6)}px;height:${Hh}px;transform:translate(${M[0]}px,${M[1]}px) rotate(${Math.atan2(n[1], n[0])}rad) translate(0,${-Hh/2}px)`;
+}
+
+const show = l => sheets.forEach((s, i) => { s.classList.toggle('on', l.includes(i)); s.style.clipPath = ''; });
+function anim(a, b, ms, fn, step, done) {
+  const t0 = performance.now();
+  (function f(t) { const k = clamp((t - t0) / ms, 0, 1), e = fn(k); step([a[0] + (b[0]-a[0])*e, a[1] + (b[1]-a[1])*e]); k < 1 ? requestAnimationFrame(f) : done && done(); })(t0);
+}
+
+/* ---------- cantinho dobrado (indica que há próxima página) ---------- */
+const idleP = () => { const s = W * .07; return [W - s, H - s]; };
+function idleFrame(t) {
+  if (!idleOn) return;
+  const s = W * (.07 + (reduce ? 0 : .012 * Math.sin(t / 700)));
+  render([W - s, H - s], cur);
+  if (!reduce) raf = requestAnimationFrame(idleFrame);
+}
+function stopIdle() { idleOn = false; cancelAnimationFrame(raf); }
+function zones() { zR.hidden = !opened || cur >= last; zL.hidden = !opened || cur <= 0; }
+function startIdle() {
+  stopIdle(); zones();
+  if (cur < last) { show([cur, cur + 1]); idleOn = true; idleFrame(performance.now()); }
+  else { show([cur]); pages.classList.remove('fold-on'); }
+}
+
+/* ---------- virar a folha ---------- */
+function begin(dir) { stopIdle(); busy = true; show(dir > 0 ? [cur, cur + 1] : [cur - 1, cur]); return dir > 0 ? cur : cur - 1; }
+function finish(dir) { cur += dir; busy = false; pages.classList.remove('fold-on'); startIdle(); }
+function settle(dir, idx, from, go) {
+  const away = [-W * 1.05, H * .9];
+  if (dir > 0) go ? anim(from, away, 650, ease, P => render(P, idx), () => finish(1))
+                  : anim(from, idleP(), 380, easeOut, P => render(P, idx), () => { busy = false; startIdle(); });
+  else go ? anim(from, [W - .5, H - .5], 600, ease, P => render(P, idx), () => finish(-1))
+          : anim(from, [-W * 1.05, H * .92], 380, easeOut, P => render(P, idx), () => { pages.classList.remove('fold-on'); busy = false; startIdle(); });
+}
+function go(dir) {
+  if (busy || !opened || (dir > 0 && cur >= last) || (dir < 0 && cur <= 0)) return;
+  settle(dir, begin(dir), dir > 0 ? idleP() : [-W * 1.05, H * .92], true);
+}
+
+const rel = e => { const r = pages.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+const down = dir => e => {
+  if (busy || !opened) return;
+  e.preventDefault(); e.currentTarget.setPointerCapture(e.pointerId);
+  const idx = begin(dir), P0 = dir > 0 ? idleP() : [-W * 1.05, H * .92];
+  render(P0, idx);
+  drag = { dir, idx, P0, P: P0, s: rel(e), lp: rel(e), lt: performance.now(), v: 0, moved: 0 };
+};
+zR.addEventListener('pointerdown', down(1));
+zL.addEventListener('pointerdown', down(-1));
+addEventListener('pointermove', e => {
+  if (!drag) return;
+  const d = drag, p = rel(e), t = performance.now();
+  d.v = .6 * d.v + .4 * (p[0] - d.lp[0]) / Math.max(1, t - d.lt); d.lp = p; d.lt = t;
+  const ox = p[0] - d.s[0], oy = p[1] - d.s[1];
+  d.moved = Math.max(d.moved, Math.hypot(ox, oy));
+  d.P = d.dir > 0 ? [clamp(d.P0[0] + ox, -W * 1.05, W - 1), clamp(d.P0[1] + oy, H * .55, H - 1)]
+                  : [clamp(d.P0[0] + 1.9 * ox, -W * 1.05, W - 1), clamp(d.P0[1] + .5 * oy, H * .6, H - 1)];
+  render(d.P, d.idx);
+});
+function release() {
+  if (!drag) return;
+  const d = drag; drag = null;
+  const ok = d.moved < 8 || (d.dir > 0 ? (d.P[0] < W * .55 || d.v < -.5) : (d.P[0] > -W * .45 || d.v > .5));  // toque, passou da metade ou gesto rápido
+  settle(d.dir, d.idx, d.P, ok);
+}
+addEventListener('pointerup', release);
+addEventListener('pointercancel', release);
+addEventListener('keydown', e => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); });
+[[zR, 1], [zL, -1]].forEach(([z, d]) => z.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(d); } }));
+
+/* ---------- abertura da lapela ---------- */
+function open() {
+  if (opened || invite.classList.contains('opening')) return;
+  invite.classList.add('opening');
+  setTimeout(() => { opened = true; invite.classList.add('opened'); startIdle(); }, 2700);
+}
+$('#seal').addEventListener('click', open);
+$('#clique').addEventListener('click', open);
+
+/* ---------- carregamento e responsividade ---------- */
+measure(); show([0]);
+addEventListener('resize', () => { measure(); if (idleOn && reduce) idleFrame(performance.now()); });
+const imgs = ['assets/lapela.webp', 'assets/folha-principal.jpg', 'assets/paper-page.jpg'];
+Promise.race([
+  Promise.all(imgs.map(u => new Promise(r => { const i = new Image(); i.onload = i.onerror = r; i.src = u; }))).then(() => document.fonts && document.fonts.ready),
+  new Promise(r => setTimeout(r, 6000))
+]).then(() => { measure(); document.body.classList.add('ready'); });
+})();
+</script>
+</body>
+</html>
