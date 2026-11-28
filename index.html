@@ -31,7 +31,7 @@
 :root{
   --ink:#3f3832; --gold:#b08d57; --gold-d:#8a6d3b;
   --script:'Citadel Script','Pinyon Script',cursive;
-  --cw:min(100vw,50dvh);                         /* largura do convite: proporção 9:18 (1 largura : 2 alturas) */
+  --cw:min(88vw,48dvh);                          /* largura do convite: proporção 9:16, com margem livre ao redor */
   --tri:0.2% 0,99.8% 0,50% 63.5%;                /* contorno triangular da lapela */
 }
 *{box-sizing:border-box;margin:0}
@@ -49,7 +49,7 @@ body{
 
 /* ============ CONVITE (9:18) ============ */
 .invite{
-  position:relative;width:var(--cw);height:calc(var(--cw)*2);container-type:size;   /* tudo usa cqw: escala com o convite */
+  position:relative;width:var(--cw);height:calc(var(--cw)*16/9);container-type:size;   /* tudo usa cqw: escala com o convite */
   opacity:0;transition:opacity .9s ease;box-shadow:0 2cqw 7cqw rgba(0,0,0,.5);
 }
 .ready .invite{opacity:1}
@@ -58,26 +58,25 @@ body{
 /* ---------- folhas internas ---------- */
 .sheet{position:absolute;inset:0;display:none;z-index:var(--z);background:#f3efe6}
 .sheet.on{display:block}
-/* a arte da folha é 9:16; metade de cima + metade de baixo evitam distorcer o papel e o dourado */
-.sheet::before,.sheet::after{content:"";position:absolute;left:0;width:100%;height:50.2%;background:url(assets/folha-principal.jpg) no-repeat;background-size:100% auto}
-.sheet::before{top:0;background-position:top}
-.sheet::after{bottom:0;background-position:bottom}
-.in{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;padding:23cqw 11cqw 21cqw}
-.in.mid{justify-content:center;gap:7cqw}
+.sheet::before{content:"";position:absolute;inset:0;background:url(assets/folha-principal.jpg) center/100% 100% no-repeat}
+.in{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;gap:3cqw;padding:20cqw 11cqw 17cqw}
+.in.mid{justify-content:center;gap:6cqw;padding:17cqw 10cqw 15cqw}
+.in.p2{gap:4cqw;padding:13cqw 9cqw}
 .hint{position:absolute;left:0;right:0;bottom:7cqw;font-size:2.8cqw;letter-spacing:.16em;color:var(--gold-d);opacity:.85}
 
 /* página 1 */
-.quote{font-size:4cqw;letter-spacing:.05em;line-height:1.6;max-width:72cqw}
-.quote small{display:block;margin-top:2.4cqw;font-size:3.1cqw;letter-spacing:.12em;color:var(--gold-d)}
-.names{font-family:var(--script);font-weight:400;font-size:11.5cqw;line-height:1.1;text-wrap:balance}
+.quote{font-size:3.4cqw;letter-spacing:.03em;line-height:1.55;white-space:nowrap}
+.quote small{display:block;margin-top:2cqw;font-size:2.9cqw;letter-spacing:.12em;color:var(--gold-d)}
+.names{font-family:var(--script);font-weight:400;font-size:10.5cqw;line-height:1.1;text-wrap:balance}
 .amp{display:block;font:400 6.4cqw 'Cormorant SC',serif;color:var(--gold);margin:1.2cqw 0}
-.lead{font-size:4cqw;letter-spacing:.05em;line-height:1.65}
+.lead{font-size:3.9cqw;letter-spacing:.05em;line-height:1.6;max-width:70cqw;text-wrap:balance}
 .cap{font-size:3.6cqw;letter-spacing:.1em;color:var(--gold-d);margin-bottom:3.4cqw}
 .parents{display:grid;grid-template-columns:1fr 1fr;gap:5cqw;width:78cqw;font-size:3.4cqw;letter-spacing:.04em;line-height:1.5}
 .parents span{display:block;margin-bottom:1.6cqw}
 
 /* página 2 */
-.st{font-family:var(--script);font-weight:400;font-size:10cqw;line-height:1}
+.st{font-family:var(--script);font-weight:400;font-size:9cqw;line-height:1;white-space:nowrap}
+.cdate{font-size:4.4cqw;font-weight:600;letter-spacing:.06em}
 .when{font-size:4.3cqw;letter-spacing:.05em;line-height:1.65}
 .when b{font-weight:600}
 .addr{display:inline-flex;gap:1.6cqw;align-items:flex-start;max-width:72cqw;margin-top:2.6cqw;font-size:3.3cqw;letter-spacing:.04em;line-height:1.45;color:var(--ink);text-decoration:none;border-bottom:1px solid rgba(176,141,87,.55);padding-bottom:1cqw}
@@ -95,12 +94,13 @@ body{
 .ic svg{width:12.5cqw;height:12.5cqw;fill:none;stroke:var(--gold-d);stroke-width:1;stroke-linecap:round;stroke-linejoin:round}
 .ic span{font-size:3.2cqw;letter-spacing:.06em;line-height:1.3}
 .polaroid{width:56cqw;background:#fff;padding:3.2cqw 3.2cqw 11.5cqw;transform:rotate(-2.4deg);box-shadow:0 .9cqw 2.6cqw rgba(0,0,0,.28),0 .2cqw .7cqw rgba(0,0,0,.18)}
+.bye{font-size:5.2cqw;letter-spacing:.14em}
 .polaroid .ph{aspect-ratio:4/5;background:linear-gradient(135deg,#e6dfd2,#d9d0bf);overflow:hidden}
 .polaroid img{display:block;width:100%;height:100%;object-fit:cover}
 
 /* ---------- capa fechada ---------- */
 .cover{position:absolute;inset:0;z-index:5;background:url(assets/paper-page.jpg) center/cover,#f3efe6}
-.clique{position:absolute;left:0;right:0;top:63.5%;z-index:25;border:0;background:none;font:inherit;font-size:3.1cqw;letter-spacing:.38em;color:var(--gold-d);cursor:pointer;text-align:center;animation:blink 2.8s ease-in-out infinite}
+.clique{position:absolute;left:0;right:0;top:69.5%;z-index:25;border:0;background:none;font:inherit;font-size:3.1cqw;letter-spacing:.38em;color:var(--gold-d);cursor:pointer;text-align:center;animation:blink 2.8s ease-in-out infinite}
 @keyframes blink{50%{opacity:.4}}
 
 /* lapela: peça articulada pelo lado de cima (dobradiça no topo) */
@@ -144,9 +144,9 @@ body{
 #flapShade{background:linear-gradient(90deg,rgba(30,20,5,.38) 0,rgba(255,255,255,.38) 18%,rgba(0,0,0,.05) 60%,rgba(0,0,0,.2) 100%)}
 #underG{background:linear-gradient(90deg,rgba(0,0,0,.34),rgba(0,0,0,0))}
 
-.zone{position:absolute;bottom:0;width:30%;height:16%;z-index:20;touch-action:none;cursor:grab;outline:none}
+.zone{position:absolute;bottom:-8cqw;width:36%;height:calc(18% + 8cqw);z-index:20;touch-action:none;cursor:grab;outline:none}
 .zone:focus-visible{box-shadow:inset 0 0 0 2px rgba(138,109,59,.5)}
-#zoneR{right:0}#zoneL{left:0}
+#zoneR{right:-6cqw}#zoneL{left:-6cqw}   /* a zona de toque vaza um pouco para fora da folha */
 
 @media (prefers-reduced-motion:reduce){.clique,.seal{animation:none}}
 </style>
@@ -163,8 +163,7 @@ body{
       <!-- Folha 1 · convite principal -->
       <section class="sheet on" style="--z:3"><div class="in">
         <blockquote class="quote">Foi o tempo que dedicaste à tua rosa<br>que a fez tão importante.<small>— Antoine de Saint-Exupéry</small></blockquote>
-        <h1 class="names">Pedro Afonso Oliveira Rocha<span class="amp">&amp;</span>Sarah Pereira Martins</h1>
-        <p class="lead">Convidam para celebração do seu casamento.<br>Sua presença tornará esse dia ainda mais especial.</p>
+        <h1 class="names">Sarah Pereira Martins<span class="amp">&amp;</span>Pedro Afonso Oliveira Rocha</h1>
         <div>
           <p class="cap">Com a bênção de seus pais:</p>
           <div class="parents">
@@ -172,13 +171,15 @@ body{
             <div><span>Amarildo Alves da Rocha</span><span>Ângela Maria de Oliveira Rocha</span></div>
           </div>
         </div>
+        <p class="lead">Convidam para celebração do seu casamento. Sua presença tornará esse dia ainda mais especial.</p>
         <p class="hint">Puxe o canto para virar a página</p>
       </div></section>
 
       <!-- Folha 2 · cerimônia e recepção -->
-      <section class="sheet" style="--z:2"><div class="in mid">
+      <section class="sheet" style="--z:2"><div class="in mid p2">
+        <p class="cdate">Sábado, dia 30 de janeiro de 2027</p>
         <h2 class="st">Cerimônia religiosa</h2>
-        <p class="when"><b>Sábado, dia 30 de janeiro de 2027,</b><br>Às 15:30h, na Igreja Matriz
+        <p class="when"><b>Às 15:30h, na Igreja Matriz</b>
           <br><a class="addr" href="https://maps.app.goo.gl/eSbXkjs3kRv5yhiB6" target="_blank" rel="noopener" aria-label="Abrir a Igreja Matriz no Google Maps">
             <svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
             <span>(Praça Dr. Raul Carneiro, nº 5 - Centro, Tupaciguara - MG)</span></a></p>
@@ -208,6 +209,7 @@ body{
         </nav>
         <!-- Polaroid: usa assets/couple.jpeg; se o arquivo não existir, fica só o espaço vazio -->
         <figure class="polaroid"><div class="ph"><img src="assets/couple.jpeg" alt="Pedro e Sarah" onerror="this.remove()"></div></figure>
+        <p class="bye">Esperamos por você</p>
       </div></section>
 
       <!-- dobra do canto: sombra revelada + verso do papel -->
